@@ -1,0 +1,69 @@
+{
+  "source": "https://transparencia.al.ce.gov.br/despesas/verba-desempenho-parlamentar",
+  "year": "2025",
+  "months": {
+    "01": {
+      "deputies": 47,
+      "detail_pages": 47,
+      "rows": 208
+    },
+    "02": {
+      "deputies": 51,
+      "detail_pages": 51,
+      "rows": 411
+    },
+    "03": {
+      "deputies": 50,
+      "detail_pages": 50,
+      "rows": 372
+    },
+    "04": {
+      "deputies": 49,
+      "detail_pages": 49,
+      "rows": 328
+    },
+    "05": {
+      "deputies": 46,
+      "detail_pages": 46,
+      "rows": 272
+    },
+    "06": {
+      "deputies": 51,
+      "detail_pages": 51,
+      "rows": 335
+    },
+    "07": {
+      "deputies": 48,
+      "detail_pages": 48,
+      "rows": 303
+    },
+    "08": {
+      "deputies": 55,
+      "detail_pages": 55,
+      "rows": 474
+    },
+    "09": {
+      "deputies": 53,
+      "detail_pages": 53,
+      "rows": 321
+    },
+    "10": {
+      "deputies": 58,
+      "detail_pages": 58,
+      "rows": 405
+    },
+    "11": {
+      "deputies": 56,
+      "detail_pages": 56,
+      "rows": 406
+    },
+    "12": {
+      "deputies": 53,
+      "detail_pages": 53,
+      "rows": 384
+    }
+  },
+  "total_rows": 4219,
+  "output_csv": "dados\\processed\\vdp_2025_por_deputado.csv",
+  "raw_detail_dir": "dados\\raw\\detalhes"
+}
