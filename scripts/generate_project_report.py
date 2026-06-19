@@ -31,6 +31,14 @@ PROMPTS = [
     "extraia as informacoes desse link e baixe o que e preciso. Considere utilizar para construcao do dashboard flask ou Streamlit, o que for mais otimizado para esse fim.",
     "considere baixar os 12 meses pra cada deputado",
     "prossiga com o streamlit e ao final informe o endpoint do servico. Consolide todas as etapas que vc realizou (bem como dificuldades enfrentadas e erros, prompts inseridos e erros de dados nos arquivos CSV), pode ser em um documento PDF.",
+    "no relatorio PDF ja gerado, incluir a lista com os nomes dos integrantes da equipe deste trabalho.",
+]
+
+TEAM_MEMBERS = [
+    "Giovanna Munhoz",
+    "Gleydson Silva",
+    "Jandro Medeiros",
+    "Francisco Queiroz",
 ]
 
 NAME_FIXES = [
@@ -84,6 +92,9 @@ def build_markdown(manifest: dict, rows: list[dict[str, str]]) -> str:
 
     lines = [
         "# Relatorio de construcao do dashboard VDP ALECE 2025",
+        "",
+        "## Equipe",
+        *[f"- {member}" for member in TEAM_MEMBERS],
         "",
         "## Objetivo",
         "Construir um painel de visualizacao para a Verba de Desempenho Parlamentar (VDP) da Assembleia Legislativa do Estado do Ceara, cobrindo janeiro a dezembro de 2025, com filtros por deputado, mes/ano e credor, graficos de top 10 despesas por deputado e por credor, e evolucao mensal das despesas.",
@@ -219,6 +230,7 @@ def build_pdf(manifest: dict, rows: list[dict[str, str]]) -> None:
         leftMargin=1.5 * cm,
         topMargin=1.4 * cm,
         bottomMargin=1.4 * cm,
+        pageCompression=0,
     )
 
     styles = getSampleStyleSheet()
@@ -254,6 +266,9 @@ def build_pdf(manifest: dict, rows: list[dict[str, str]]) -> None:
             body,
         )
     )
+
+    add_heading(story, "Equipe", styles, 2)
+    add_bullets(story, TEAM_MEMBERS, body)
 
     add_heading(story, "Objetivo", styles, 2)
     story.append(

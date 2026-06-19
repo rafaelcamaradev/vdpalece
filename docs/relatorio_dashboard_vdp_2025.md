@@ -1,5 +1,11 @@
 # Relatorio de construcao do dashboard VDP ALECE 2025
 
+## Equipe
+- Giovanna Munhoz
+- Gleydson Silva
+- Jandro Medeiros
+- Francisco Queiroz
+
 ## Objetivo
 Construir um painel de visualizacao para a Verba de Desempenho Parlamentar (VDP) da Assembleia Legislativa do Estado do Ceara, cobrindo janeiro a dezembro de 2025, com filtros por deputado, mes/ano e credor, graficos de top 10 despesas por deputado e por credor, e evolucao mensal das despesas.
 
@@ -8,6 +14,7 @@ Construir um painel de visualizacao para a Verba de Desempenho Parlamentar (VDP)
 2. extraia as informacoes desse link e baixe o que e preciso. Considere utilizar para construcao do dashboard flask ou Streamlit, o que for mais otimizado para esse fim.
 3. considere baixar os 12 meses pra cada deputado
 4. prossiga com o streamlit e ao final informe o endpoint do servico. Consolide todas as etapas que vc realizou (bem como dificuldades enfrentadas e erros, prompts inseridos e erros de dados nos arquivos CSV), pode ser em um documento PDF.
+5. no relatorio PDF ja gerado, incluir a lista com os nomes dos integrantes da equipe deste trabalho.
 
 ## Etapas realizadas
 1. Analisei o PDF do trabalho no diretorio e extraí os requisitos minimos do dashboard.
