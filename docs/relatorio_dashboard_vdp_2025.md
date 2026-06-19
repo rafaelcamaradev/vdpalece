@@ -50,6 +50,7 @@ Construir um painel de visualizacao para a Verba de Desempenho Parlamentar (VDP)
 - DEP ALMIIR BIE -> DEP ALMIR BIE
 - DEP ALMIR B -> DEP ALMIR BIE
 - DEP ALYSSON AGUYIAR -> DEP ALYSSON AGUIAR
+- DEP CARMELO BOLSONARO -> DEP CARMELO NETO
 - DEP EMIILA PESSOA -> DEP EMILIA PESSOA
 - DEP EMILA PESSOA -> DEP EMILIA PESSOA
 - DEP FIRMO CAMUCA -> DEP FIRMO CAMURCA
@@ -59,7 +60,7 @@ Construir um painel de visualizacao para a Verba de Desempenho Parlamentar (VDP)
 
 ## Resumo quantitativo
 - Registros na base final: 4219
-- Deputados unicos na base final normalizada: 59
+- Deputados unicos na base final normalizada: 58
 - Nomes originais distintos antes da normalizacao: 69
 - Paginas HTML de detalhe salvas: 617
 - Registros com valor negativo: 196
