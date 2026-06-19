@@ -25,7 +25,7 @@ Fonte: https://transparencia.al.ce.gov.br/despesas/verba-desempenho-parlamentar
 | DEP ALMIIR BIE | DEP ALMIR BIE |
 | DEP ALMIR B | DEP ALMIR BIE |
 | DEP ALYSSON AGUYIAR | DEP ALYSSON AGUIAR |
-| DEP CARMELO BOLSONARO | DEP CARMELO NETO |
+| Variacao indevida do nome de Carmelo Neto | DEP CARMELO NETO |
 | DEP EMIILA PESSOA | DEP EMILIA PESSOA |
 | DEP EMILA PESSOA | DEP EMILIA PESSOA |
 | DEP FIRMO CAMUCA | DEP FIRMO CAMURCA |

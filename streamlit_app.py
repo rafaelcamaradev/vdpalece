@@ -12,6 +12,14 @@ ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "dados" / "processed" / "vdp_2025_dashboard.csv"
 SOURCE_URL = "https://transparencia.al.ce.gov.br/despesas/verba-desempenho-parlamentar"
 
+DEPUTY_NAME_FIXES = {
+    "DEP CARMELO BOLSONARO": "DEP CARMELO NETO",
+}
+
+HIDE_ORIGINAL_AS_ALIAS = {
+    "DEP CARMELO BOLSONARO",
+}
+
 COLOR_SEQUENCE = [
     "#2563eb",
     "#16a34a",
@@ -82,9 +90,50 @@ def brl(value: float) -> str:
     return formatted.replace(",", "X").replace(".", ",").replace("X", ".")
 
 
+def file_version(path: Path) -> str:
+    stat = path.stat()
+    return f"{stat.st_mtime_ns}:{stat.st_size}"
+
+
+def clean_deputy_name(value: object) -> str:
+    name = str(value).strip().upper().replace("DEP.", "DEP")
+    return " ".join(name.split())
+
+
+def normalize_deputy_name(value: object) -> str:
+    name = clean_deputy_name(value)
+    return DEPUTY_NAME_FIXES.get(name, name)
+
+
+def replace_hidden_aliases(value: object) -> str:
+    text = str(value)
+    for alias in HIDE_ORIGINAL_AS_ALIAS:
+        replacement = DEPUTY_NAME_FIXES[alias]
+        text = text.replace(alias, replacement)
+        text = text.replace(alias.replace("DEP ", "DEP. "), replacement)
+    return text
+
+
+def is_valid_deputy_name(value: object) -> bool:
+    return clean_deputy_name(value).startswith("DEP ")
+
+
 @st.cache_data(show_spinner=False)
-def load_data(path: str) -> pd.DataFrame:
+def load_data(path: str, data_version: str) -> pd.DataFrame:
     df = pd.read_csv(path, sep=";", encoding="utf-8-sig")
+    df["DEPUTADO"] = df["DEPUTADO"].map(normalize_deputy_name)
+    if "DEPUTADO_ORIGINAL" in df.columns:
+        df["DEPUTADO_ORIGINAL"] = df["DEPUTADO_ORIGINAL"].map(
+            lambda value: (
+                normalize_deputy_name(value)
+                if clean_deputy_name(value) in HIDE_ORIGINAL_AS_ALIAS
+                else clean_deputy_name(value)
+            )
+        )
+    for column in ["DESCRICAO", "CODIGO"]:
+        if column in df.columns:
+            df[column] = df[column].map(replace_hidden_aliases)
+    df = df[df["DEPUTADO"].map(is_valid_deputy_name)].copy()
     df["VALOR_NUM"] = pd.to_numeric(df["VALOR_NUM"], errors="coerce").fillna(0)
     df["DATA_MES"] = pd.to_datetime(df["DATA_MES"], errors="coerce")
     df["VALOR_POSITIVO"] = df["VALOR_NUM"].clip(lower=0)
@@ -218,7 +267,7 @@ def line_chart(df: pd.DataFrame):
     return fig
 
 
-df = load_data(str(DATA_PATH))
+df = load_data(str(DATA_PATH), file_version(DATA_PATH))
 
 month_order = (
     df[["PERIODO", "DATA_MES"]]

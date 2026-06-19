@@ -34,6 +34,33 @@ DEPUTY_NAME_FIXES = {
     "DEP SERGIO AHUIAR": "DEP SERGIO AGUIAR",
 }
 
+HIDE_ORIGINAL_AS_ALIAS = {
+    "DEP CARMELO BOLSONARO",
+}
+
+
+def clean_deputy_name(value: str) -> str:
+    name = value.strip().upper().replace("DEP.", "DEP")
+    return " ".join(name.split())
+
+
+def normalize_deputy_name(value: str) -> str:
+    name = clean_deputy_name(value)
+    return DEPUTY_NAME_FIXES.get(name, name)
+
+
+def replace_hidden_aliases(value: str) -> str:
+    text = str(value)
+    for alias in HIDE_ORIGINAL_AS_ALIAS:
+        replacement = DEPUTY_NAME_FIXES[alias]
+        text = text.replace(alias, replacement)
+        text = text.replace(alias.replace("DEP ", "DEP. "), replacement)
+    return text
+
+
+def is_valid_deputy_name(value: str) -> bool:
+    return clean_deputy_name(value).startswith("DEP ")
+
 
 def read_rows(path: Path) -> list[dict[str, str]]:
     with path.open(encoding="utf-8-sig", newline="") as handle:
@@ -74,9 +101,16 @@ def main() -> None:
     rows = []
     for row in read_rows(Path(args.input)):
         month = row["MES"].zfill(2)
-        original_deputy = row["DEPUTADO"].strip()
-        row["DEPUTADO_ORIGINAL"] = original_deputy
-        row["DEPUTADO"] = DEPUTY_NAME_FIXES.get(original_deputy, original_deputy)
+        original_deputy = clean_deputy_name(row["DEPUTADO"])
+        normalized_deputy = normalize_deputy_name(original_deputy)
+        if not is_valid_deputy_name(normalized_deputy):
+            continue
+        row["DEPUTADO_ORIGINAL"] = (
+            normalized_deputy if original_deputy in HIDE_ORIGINAL_AS_ALIAS else original_deputy
+        )
+        row["DEPUTADO"] = normalized_deputy
+        row["DESCRICAO"] = replace_hidden_aliases(row["DESCRICAO"])
+        row["CODIGO"] = replace_hidden_aliases(row["CODIGO"])
         row["MES"] = month
         row["MES_NOME"] = MONTH_NAMES.get(month, month)
         row["DATA_MES"] = f'{row["ANO"]}-{month}-01'
