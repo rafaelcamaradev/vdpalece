@@ -3,11 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,7 +65,7 @@ CASES = [
             "88,6% confirmaram reducao de tempo na pesquisa de mercado.",
         ],
         "brazil": "Encaixe natural no Compras.gov.br, Ministerio da Gestao/SEGES, centrais estaduais de compras, TCU e controladorias. Pode apoiar pesquisa de preco, planejamento da contratacao e controle.",
-        "feasibility": "Viavel no medio prazo. A maior barreira e qualidade/integração dos dados historicos de compras e desenho juridico conforme Lei 14.133, pesquisa de precos, transparencia e governanca.",
+        "feasibility": "Viavel no medio prazo. A maior barreira e qualidade/integracao dos dados historicos de compras e desenho juridico conforme Lei 14.133, pesquisa de precos, transparencia e governanca.",
         "requirements_fit": "Cumpre muito bem os requisitos de escala, impacto e aplicabilidade. A unica ressalva e explicar a IA com cuidado, pois parte do valor vem de estatistica, automacao e dados estruturados.",
         "sources": [
             "https://oecd-opsi.org/innovations/electronic-quoter-peru/",
@@ -224,11 +223,15 @@ def para(text: str, style: ParagraphStyle) -> Paragraph:
     return Paragraph(escape(text), style)
 
 
-def bullet_list(items: list[str], style: ParagraphStyle) -> list:
+def bullet_list(items: list[str], style: ParagraphStyle, bullet: str = "-") -> list:
     flowables = []
     for item in items:
-        flowables.append(para(f"- {item}", style))
+        flowables.append(para(f"{bullet} {item}", style))
     return flowables
+
+
+def source_text(sources: list[str]) -> str:
+    return "Fontes: " + "; ".join(sources)
 
 
 def build_pdf() -> None:
@@ -250,15 +253,35 @@ def build_pdf() -> None:
         "Body",
         parent=styles["BodyText"],
         fontName="Helvetica",
-        fontSize=9,
-        leading=12,
-        spaceAfter=5,
+        fontSize=9.5,
+        leading=13,
+        spaceAfter=6,
+        splitLongWords=True,
     )
     small = ParagraphStyle(
         "Small",
         parent=body,
-        fontSize=7.6,
-        leading=9.2,
+        fontSize=8.2,
+        leading=10,
+        spaceAfter=4,
+        splitLongWords=True,
+        wordWrap="CJK",
+    )
+    rank_style = ParagraphStyle(
+        "Rank",
+        parent=body,
+        fontName="Helvetica-Bold",
+        fontSize=10.5,
+        leading=14,
+        spaceBefore=2,
+        spaceAfter=3,
+    )
+    label_style = ParagraphStyle(
+        "Label",
+        parent=body,
+        fontName="Helvetica-Bold",
+        fontSize=9.5,
+        leading=13,
         spaceAfter=3,
     )
 
@@ -275,23 +298,11 @@ def build_pdf() -> None:
     story.extend(bullet_list(REQUIREMENTS, body))
 
     story.append(Paragraph("Ranking recomendado", styles["Heading2"]))
-    ranking_rows = [["Pos.", "Caso", "Pais", "OCDE/OPSI", "Forca principal"]]
     for case in CASES:
-        ranking_rows.append([str(case["rank"]), case["name"], case["country"], "Sim", case["why"]])
-    table = Table(ranking_rows, colWidths=[0.9 * cm, 3.4 * cm, 2.6 * cm, 2.0 * cm, 7.1 * cm])
-    table.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#e5e7eb")),
-                ("GRID", (0, 0), (-1, -1), 0.25, colors.HexColor("#cbd5e1")),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, -1), 7.2),
-                ("VALIGN", (0, 0), (-1, -1), "TOP"),
-            ]
-        )
-    )
-    story.append(table)
-    story.append(Spacer(1, 0.2 * cm))
+        story.append(para(f"{case['rank']}. {case['name']} ({case['country']})", rank_style))
+        story.append(para(f"OCDE/OPSI: {case['oecd']}", body))
+        story.append(para(f"Forca principal: {case['why']}", body))
+    story.append(Spacer(1, 0.1 * cm))
 
     for case in CASES:
         story.append(Paragraph(f"{case['rank']}. {case['name']} - {case['country']}", styles["Heading2"]))
@@ -299,20 +310,20 @@ def build_pdf() -> None:
         story.append(para(f"Por que entra no ranking: {case['why']}", body))
         story.append(para(f"Tecnologia: {case['technology']}", body))
         story.append(para(f"Atores: {case['actors']}", body))
-        story.append(para("Metricas de impacto:", body))
+        story.append(para("Metricas de impacto:", label_style))
         story.extend(bullet_list(case["metrics"], small))
         story.append(para(f"Aplicabilidade ao Brasil: {case['brazil']}", body))
         story.append(para(f"Viabilidade: {case['feasibility']}", body))
         story.append(para(f"Defesa frente aos requisitos: {case['requirements_fit']}", body))
-        story.append(para("Fontes: " + "; ".join(case["sources"]), small))
+        story.append(para(source_text(case["sources"]), small))
         story.append(Spacer(1, 0.12 * cm))
 
     story.append(Paragraph("Observacao sobre o caso sugerido: Parlamento2030", styles["Heading2"]))
     story.append(para(PARLAMENTO_2030["summary"], body))
-    story.append(para("Evidencias verificadas:", body))
+    story.append(para("Evidencias verificadas:", label_style))
     story.extend(bullet_list(PARLAMENTO_2030["evidence"], small))
     story.append(para(f"Veredito: {PARLAMENTO_2030['verdict']}", body))
-    story.append(para("Fontes: " + "; ".join(PARLAMENTO_2030["sources"]), small))
+    story.append(para(source_text(PARLAMENTO_2030["sources"]), small))
 
     story.append(Paragraph("Recomendacao final", styles["Heading2"]))
     story.append(

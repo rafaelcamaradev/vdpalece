@@ -64,7 +64,7 @@ Avaliar casos internacionais para o trabalho de Inteligencia Artificial Aplicada
 
 **Aplicabilidade ao Brasil:** Encaixe natural no Compras.gov.br, Ministerio da Gestao/SEGES, centrais estaduais de compras, TCU e controladorias. Pode apoiar pesquisa de preco, planejamento da contratacao e controle.
 
-**Viabilidade:** Viavel no medio prazo. A maior barreira e qualidade/integração dos dados historicos de compras e desenho juridico conforme Lei 14.133, pesquisa de precos, transparencia e governanca.
+**Viabilidade:** Viavel no medio prazo. A maior barreira e qualidade/integracao dos dados historicos de compras e desenho juridico conforme Lei 14.133, pesquisa de precos, transparencia e governanca.
 
 **Defesa frente aos requisitos:** Cumpre muito bem os requisitos de escala, impacto e aplicabilidade. A unica ressalva e explicar a IA com cuidado, pois parte do valor vem de estatistica, automacao e dados estruturados.
 
